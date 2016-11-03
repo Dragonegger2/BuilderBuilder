@@ -6,9 +6,16 @@ class App extends Component {
   render() {
     return (
       <div className="builder">
-        <input
+        <div>
+          Response Object Name:<input
+            type='textbox'
+          />
+        </div>
+        <div>
+        Response Name:<input
           type='textbox'
         />
+        </div>
       </div>
     );
   }

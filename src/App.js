@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import ClassComponent from "./ClassComponent";
+import BaseClassComponent from "./BaseClassComponent";
+import NestedClassComponent from "./NestedClassComponent";
 
 class App extends Component {
  
@@ -8,11 +9,12 @@ class App extends Component {
     super(props);
     
     this.state = {
-      responseObjectName: "",
+      responseObjectName: "%PLACE_HOLDER_VALUE%",
       pastedText: "",
       builtCode: "",
-      errorMessage: "",
-      createTokenMethod: ""
+      errorMessage: "MeerkatErrorMessage",
+      createTokenMethod: "authentication",
+      apiRequestBaseName: "APIRequestBase"
     };
 
     this.changePastedText = this.changePastedText.bind(this);
@@ -94,7 +96,7 @@ class App extends Component {
     lexiconsWithoutWhiteSpace.forEach((element) => {
       var splitProperties = element.split(' ');
       var property = {
-        "propertyName": splitProperties.pop(),
+        "fieldName": splitProperties.pop(),
         "type": splitProperties.pop()
       };
 
@@ -121,7 +123,33 @@ class App extends Component {
 
   createBuilder() {
     var jData = this.createJSONObject();
-    console.log(JSON.stringify(jData));
+
+    var classes = [];
+    var baseClass = jData.shift();
+
+    classes.push(
+        <BaseClassComponent 
+          className={baseClass.className}
+          createErrorTokenMethod={this.state.createTokenMethod}
+          errorMessageName={this.state.errorMessage}
+          APIRequestBaseName={this.state.apiRequestBaseName}
+          fields={baseClass.fields}
+          key={baseClass.className}
+        />
+    );
+
+    jData.forEach((classObject) => {
+      classes.push(
+        <NestedClassComponent 
+          className={classObject.className}
+          fields={classObject.fields}
+          key={classObject.className}
+          parentClass={baseClass.className}
+        />
+      );
+    });
+
+    this.setState({builtCode: classes})
   }
 
   render() {

@@ -14,7 +14,7 @@ Currently, this project will *not* handle nested builders. Future versions of th
 ##How do I use this project?
 This project is designed to take the schemas from an API project and generate a builder class for that schema.
 
-
+###Example Schema
 ```cs
 
 using System.Runtime.Serialization;

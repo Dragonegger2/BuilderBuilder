@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import ClassComponent from "./ClassComponent";
 
 class App extends Component {
  
@@ -114,12 +115,14 @@ class App extends Component {
         }
       }
     });
-    this.setState({builtCode: JSON.stringify(scrubbed)});
-  }
-  createBuilder() {
-    this.createJSONObject();  
+    
+    return scrubbed;
   }
 
+  createBuilder() {
+    var jData = this.createJSONObject();
+    console.log(JSON.stringify(jData));
+  }
 
   render() {
     return (

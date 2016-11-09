@@ -179,6 +179,9 @@ class App extends Component {
               </code>
             </pre>
           </div>
+          <footer>
+            Look <a href="https://github.com/dragonegger2/builderbuilder">here</a> for documentation on this project. 
+          </footer>
       </div>
     );
   }

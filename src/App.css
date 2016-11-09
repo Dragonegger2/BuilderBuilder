@@ -35,3 +35,9 @@ textarea {
   text-align: center;
   padding-bottom:15px;
 }
+
+footer {
+  width:80%;
+  margin:auto;
+  text-align: center;
+}

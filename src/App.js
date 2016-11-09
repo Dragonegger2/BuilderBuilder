@@ -18,9 +18,11 @@ class App extends Component {
     this.changeErrorMessage = this.changeErrorMessage.bind(this);
     this.changeCreateTokenMethod = this.changeCreateTokenMethod.bind(this);
     
+    this.cleanString = this.cleanString.bind(this);
     this.returnBuilderObject = this.returnBuilderObject.bind(this);
     this.createBuilder = this.createBuilder.bind(this);
-    
+    this.createClassObject = this.createClassObject.bind(this);
+    this.createJSONObject = this.createJSONObject.bind(this);
   }
 
   returnBuilderObject(parentBuilderName, paramName, paramType) {
@@ -46,95 +48,76 @@ class App extends Component {
     this.setState({pastedText : event.target.value});
   }
 
+  cleanString() {
+    //Remove all get and set states.
+    var cleanedString = this.state.pastedText.replace(RegExp(/{.+get.+}/g), "");
+
+    //Remove all compiler comments.
+    cleanedString = cleanedString.replace(RegExp(/\/\/\/.+\n/g), "");
+
+    //Remove all comments
+    cleanedString = cleanedString.replace(RegExp(/\/\/.+/g), "");
+
+    //Remove all using statements..
+    cleanedString = cleanedString.replace(RegExp(/using.+/g), "");
+
+    //Drop tags.
+    cleanedString = cleanedString.replace(RegExp(/\[.+/g), "");
+
+    //Remove any regions
+    cleanedString = cleanedString.replace(RegExp(/#region.+/g), "");
+    cleanedString = cleanedString.replace(RegExp(/#endregion.?/g), "");
+
+    cleanedString = cleanedString.slice(cleanedString.indexOf('{')+1, cleanedString.lastIndexOf('}')-1);    
+
+    return cleanedString
+  }
+  
+  createClassObject(classStringData) {
+    var lexicons = classStringData.split('\n');
+    var lexiconsWithoutWhiteSpace = [];
+
+    lexicons.forEach((element, index) => {
+      if(element.indexOf("public") !== -1) {
+        lexiconsWithoutWhiteSpace.push(element.trim());
+      }
+    });
+    
+    var classDefinitionSplit = lexiconsWithoutWhiteSpace.shift().split(' ');
+
+    var classData = {
+      "className": classDefinitionSplit.pop(),
+      "fields": []
+    };
+
+    lexiconsWithoutWhiteSpace.forEach((element) => {
+      var splitProperties = element.split(' ');
+      var property = {
+        "propertyName": splitProperties.pop(),
+        "type": splitProperties.pop()
+      };
+
+      classData.fields.push(property);
+    });
+
+    return classData;
+  }
+
+  createJSONObject() {
+    var cleanedString = this.cleanString()
+    var splitClass = cleanedString.split(RegExp(/\}/));
+    var scrubbed = [];
+    splitClass.forEach((element) => {
+      if(element.indexOf("public enum") === -1) {
+        if(element !== null && element !== "") {
+          scrubbed.push(this.createClassObject(element.replace(RegExp(/^\s+|\s+$/g), '')));
+        }
+      }
+    });
+    this.setState({builtCode: JSON.stringify(scrubbed)});
+  }
   createBuilder() {
-    //pastedText gets passed to the 'parser'
-    var splitValues = this.state.pastedText.split('\n');
-    var relevantData = [];
-    var className = "";
-    var parentBuilderName = "";
-
-    splitValues.forEach((element) => {
-      if(element.includes("public class")) {
-        className = element.trim().split(' ')[2];
-        parentBuilderName = `${className}Builder`;
-      }
-
-      else if(element.includes("public") && element.includes("{")) {
-        relevantData.push(element.trim());
-      }
-    });
-
-    var builtCodeBody = "";
-    //Rebuild relevantData with relevant builder text.
-    relevantData.forEach((element, index) => {
-      var lexicons = element.split(' ');
-      var type = lexicons[1];
-      var name = lexicons[2];
-
-      builtCodeBody += this.returnBuilderObject(parentBuilderName, name, type) + "\n";
-    });
-
-
-//TODO: Need to add a component for the MeerkatAPIRequestBase
-    var builtCodeHeader = `
-    using System;
-    using EP.PAL.BASE;
-    using EP.PAL.BASE.WebService.INF;
-    namespace //TODO: Namespace must be set.
-    {
-      //TODO: All classes require an explanation of the purpose of the request builder.
-      public class ${parentBuilderName} : MeerkatAPIRequestBase<${parentBuilderName}>
-      {
-
-        // Fields to hold data
-        private const string CreateTokenMethod = "${this.state.createTokenMethod}";
-        internal ${className}Request RequestObject = new ${className}Request();
-
-        /// <summary>
-        /// constructor to the class
-        /// </summary>
-        /// <param name="ServiceURL">ServiceURL</param>
-        /// <param name="Options">MessageOptions</param>
-        /// <param name="Logger">IPALLogging</param>
-        internal ${parentBuilderName}(string ServiceURL, MessageOptions Options, IPALLogging Logger)
-            : base(Options, Logger)
-        {
-            EndPoint = URLHelper.CombineUri(ServiceURL, CreateTokenMethod);
-        }
-
-    `
-
-    var builtCodeFooter = `
-        /// <summary>
-        /// Send the request to Meerkat         
-        /// </summary>
-        /// <returns>Returns an APIResponse message with the APIResponse inside it.</returns>
-        public APIResponse<${className}Response> Send()
-        {
-            LogObj.WriteInfo("Performing Request");
-
-            return RestClient.SendRequestSerializeDeserialize<${className}Response, ${this.state.errorMessage}>(this, true);
-        }
-
-        /// <summary>
-        /// Request Data Object
-        /// </summary>
-        protected override object RequestDataObject
-        {
-            get { return RequestObject; }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-
-}
-
-`
-    var compiledCode = builtCodeHeader + builtCodeBody + builtCodeFooter;
-     this.setState({ builtCode: compiledCode});
-
+    this.createJSONObject();  
   }
 
 

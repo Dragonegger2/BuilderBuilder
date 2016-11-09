@@ -7,7 +7,7 @@ PAL stands for **P**roduct **A**bstraction **L**ayer.
 It is used to represent an API project/endpoint in a way that testers and developers can understand. 
 
 ##When to use this project?
-This project is meant to siplify, and standardized the creation of the builders that are associated with API projects.
+This project is meant to simplify, and standardized the creation of the builders that are associated with API projects.
 
 Currently, this project will *not* handle nested builders. Future versions of this project will be handle this use case, as we often make use of nested builders.
 

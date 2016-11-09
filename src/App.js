@@ -87,8 +87,8 @@ class App extends Component {
       {
 
         // Fields to hold data
-        private const string CreateTokenMethod = "${this.createTokenMethod}";
-        internal ${this.state.requestObjName} RequestObject = new ${this.state.requestObjName}();
+        private const string CreateTokenMethod = "${this.state.createTokenMethod}";
+        internal ${className}Request RequestObject = new ${className}Request();
 
         /// <summary>
         /// constructor to the class
@@ -113,7 +113,7 @@ class App extends Component {
         {
             LogObj.WriteInfo("Performing Request");
 
-            return RestClient.SendRequestSerializeDeserialize<${className}Response, ${this.errorMessage}>(this, true);
+            return RestClient.SendRequestSerializeDeserialize<${className}Response, ${this.state.errorMessage}>(this, true);
         }
 
         /// <summary>
@@ -141,6 +141,7 @@ class App extends Component {
   render() {
     return (
       <div className='builder'>     
+        <h1 className='header'>API PAL Builder v1.0.1</h1>
         <div className='fieldContainer'>
           <div className='label'>Error Message Name:</div>
             <input

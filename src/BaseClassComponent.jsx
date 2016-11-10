@@ -74,13 +74,27 @@ class BaseClassComponent extends Component {
 
         var builders = [];
         this.props.fields.forEach((element) => {
-            builders.push(
-                <BuilderComponent
-                     className={this.props.className}
-                     fieldName={element.fieldName}
-                     fieldType={element.type}
-                />
-            );
+            if(element.isNested === true) {
+                console.log("Adding nested builder.");
+                builders.push(
+                    <NestedBuilderComponent
+                        className={this.props.className}
+                        fieldName={element.fieldName}
+                        fieldType={element.type}
+                    />
+                );
+            }
+            else {
+                console.log("Adding builder.");
+                builders.push(
+                    <BuilderComponent
+                        className={this.props.className}
+                        fieldName={element.fieldName}
+                        fieldType={element.type}
+                    />
+                );
+            }
+            
         });
 
         return (          

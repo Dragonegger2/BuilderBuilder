@@ -18,7 +18,7 @@ class NestedBuilderComponent extends Component {
 
         return (  
             <div>
-                ${builder}
+                {builder}
             </div>
         );
     }

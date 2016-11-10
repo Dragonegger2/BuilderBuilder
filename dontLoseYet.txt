@@ -1,0 +1,44 @@
+      // baseClass.fields.forEach((field,index) => {
+      //   if(field.paramType === classObject.className) {
+      //     field.isNested = true;
+      //   }
+      //   else {
+      //     field.isNested = false;
+      //   }
+      // });
+
+
+
+      
+
+  //   console.log(JSON.stringify(jData));
+  //   jData.forEach((classObject) => {
+  //     // baseClass.fields.forEach((field,index) => {
+  //     //   if(field.paramType === classObject.className) {
+  //     //     field.isNested = true;
+  //     //   }
+  //     //   else {
+  //     //     field.isNested = false;
+  //     //   }
+  //     // });
+  //     console.log(JSON.stringify(classObject));
+  //     classes.push(
+  //       <NestedClassComponent 
+  //         className={classObject.className}
+  //         fields={classObject.fields}
+  //         key={classObject.className}
+  //         parentClass={baseClass.className}
+  //       />
+  //     );
+  //   });
+
+  //  classes.unshift(
+  //       <BaseClassComponent 
+  //         className={baseClass.className}
+  //         createErrorTokenMethod={this.state.createTokenMethod}
+  //         errorMessageName={this.state.errorMessage}
+  //         APIRequestBaseName={this.state.apiRequestBaseName}
+  //         fields={baseClass.fields}
+  //         key={baseClass.className}
+  //       />
+  //   );

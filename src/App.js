@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import BaseClassComponent from "./BaseClassComponent";
-// import NestedClassComponent from "./NestedClassComponent";
+import NestedClassComponent from "./NestedClassComponent";
 
 class App extends Component {
  
@@ -428,13 +428,14 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
 						jData.forEach((addParentBuilderToElement) => {
 							if(addParentBuilderToElement.className === name.trim()) 
 							{
-								addParentBuilderToElement.parentBuilder.push(name);
+								if(field.type.toLowerCase().indexOf("list") !== -1) {
+									addParentBuilderToElement.parentBuilder.push({ "name":element.className, "isList": false});
+								}
+								else {
+									addParentBuilderToElement.parentBuilder.push({ "name":element.className, "isList": true});
+								}
 							}
 						});
-
-            if(field.type.toLowerCase().indexOf("list") !== -1) {
-              field.isList = true;
-            };
           }
         });
       });
@@ -453,20 +454,17 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
           	key={classToBeBuilt.className}
         />);
       }
-      // else {
-      //   classes.push(
-      //     <NestedClassComponent 
-      //       className={classToBeBuilt.className}
-      //       fields={classToBeBuilt.fields}
-      //       key={classToBeBuilt.className}
-      //       parentClass={jData[0].className}
-			// 			parentBuilders={classToBeBuilt.parentBuilder}
-			// 			isList={classToBeBuilt.isList}
-      //     />
-      //   );
-      // }
+      else {
+        classes.push(
+          <NestedClassComponent 
+            class={classToBeBuilt}
+            key={classToBeBuilt.className}
+            parentClass={jData[0].className}
+          />
+        );
+      }
     });
-
+		console.log(JSON.stringify(jData));
     this.setState({builtCode: classes})
   }
 

@@ -11,8 +11,7 @@ class NestedBuilderComponent extends Component {
         //Nested Builder
         public ${this.props.className}Builder Add${this.props.fieldName}(${this.props.fieldType} parameterValue)
         {
-            RequestObject.${this.props.fieldName} = parameterValue;
-            return this;
+            return new ${this.props.className}Builder(ServiceURL, Options, Logger);
         }
     `;
 

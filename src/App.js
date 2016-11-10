@@ -415,6 +415,7 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
     //Get all of the class names.
     jData.forEach((element) => {
       classNames.push(element.className);
+			element.parentBuilder = [];
     });
 
     //iterate through all the classes
@@ -422,9 +423,15 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
       //iterage through all of the fields on the classes.
       element.fields.forEach((field) => {
         classNames.forEach((name) => {
-          console.log(`Name: ${name} && fieldType:${field.type}`);
           if(field.type.trim().indexOf(name.trim()) !== -1) {
-            field.isNested = name;
+            field.isNested = true;
+						jData.forEach((addParentBuilderToElement) => {
+							if(addParentBuilderToElement.className === name.trim()) 
+							{
+								addParentBuilderToElement.parentBuilder.push(name);
+							}
+						});
+
             if(field.type.toLowerCase().indexOf("list") !== -1) {
               field.isList = true;
             };
@@ -433,10 +440,28 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
       });
     });
 
-    console.log(JSON.stringify(jData));
-
     jData.forEach((classToBeBuilt) => {
-      if(classToBeBuilt.isBaseClass) {
+      if(classToBeBuilt.isBaseClass === true) {
+        classes.push(<BaseClassComponent 
+          className={classToBeBuilt.className}
+          createErrorTokenMethod={this.state.createTokenMethod}
+          errorMessageName={this.state.errorMessage}
+          APIRequestBaseName={this.state.apiRequestBaseName}
+          fields={classToBeBuilt.fields}
+          key={classToBeBuilt.className}
+        />);
+      }
+      else {
+        classes.push(
+          <NestedClassComponent 
+            className={classToBeBuilt.className}
+            fields={classToBeBuilt.fields}
+            key={classToBeBuilt.className}
+            parentClass={jData[0].className}
+						parentBuilders={classToBeBuilt.parentBuilder}
+						isList={classToBeBuilt.isList}
+          />
+        );
       }
     });
 

@@ -11,8 +11,7 @@ import React, { Component } from 'react';
  */
 class BuilderComponent extends Component {
     render() {
-        console.log(this.props);
-        var builder =
+            var builder =
         `         
         //Normal builder
         public ${this.props.className}Builder Add${this.props.fieldName}(${this.props.fieldType} parameterValue)

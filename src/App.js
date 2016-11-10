@@ -9,7 +9,6 @@ class App extends Component {
     super(props);
     
     this.state = {
-      responseObjectName: "%PLACE_HOLDER_VALUE%",
       pastedText: `
       using System;
 using System.Collections.Generic;
@@ -305,6 +304,7 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
     this.changeCreateTokenMethod = this.changeCreateTokenMethod.bind(this);
     
     this.cleanString = this.cleanString.bind(this);
+    this.changeAPIRequestBaseName = this.changeAPIRequestBaseName.bind(this);
     this.returnBuilderObject = this.returnBuilderObject.bind(this);
     this.createBuilder = this.createBuilder.bind(this);
     this.createClassObject = this.createClassObject.bind(this);
@@ -321,7 +321,11 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
         }
     `
   }
-  
+
+  changeAPIRequestBaseName(event) {
+    this.setState({apiRequestBaseName : event.target.value});
+  }  
+
   changeCreateTokenMethod(event) {
     this.setState({createTokenMethod : event.target.value});
   }
@@ -442,9 +446,7 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
     });
 
     jData.forEach((classToBeBuilt) => {
-			console.log(this.state.createTokenMethod);
       if(classToBeBuilt.isBaseClass === true) {
-				console.log(classToBeBuilt);
         classes.push(
 					<BaseClassComponent 
           	class={classToBeBuilt}
@@ -479,6 +481,14 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
               type='textbox'
               value={this.state.errorMessage}
               onChange={this.changeErrorMessage}
+              />
+        </div>
+        <div className='fieldContainer'>
+          <div className='label'>API Request Base Name:</div>
+            <input
+              type='textbox'
+              value={this.state.apiRequestBaseName}
+              onChange={this.changeAPIRequestBaseName}
               />
         </div>
         <div className='fieldContainer'>

@@ -25,8 +25,6 @@ class BaseClassComponent extends Component {
 
         this.generateHeader = this.generateHeader.bind(this);
         this.generateFooter = this.generateFooter.bind(this);
-
-        console.log(props);
     }
 
     generateHeader(createTokenMethod, className, APIRequestBaseName) {

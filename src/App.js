@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import BaseClassComponent from "./BaseClassComponent";
-import NestedClassComponent from "./NestedClassComponent";
+// import NestedClassComponent from "./NestedClassComponent";
 
 class App extends Component {
  
@@ -441,28 +441,30 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
     });
 
     jData.forEach((classToBeBuilt) => {
+			console.log(this.state.createTokenMethod);
       if(classToBeBuilt.isBaseClass === true) {
-				
-        classes.push(<BaseClassComponent 
-          class={classToBeBuilt}
-          createErrorTokenMethod={this.state.createTokenMethod}
-          errorMessageName={this.state.errorMessage}
-          APIRequestBaseName={this.state.apiRequestBaseName}
-          key={classToBeBuilt.className}
+				console.log(classToBeBuilt);
+        classes.push(
+					<BaseClassComponent 
+          	class={classToBeBuilt}
+          	createErrorTokenMethod={this.state.createTokenMethod}
+          	errorMessageName={this.state.errorMessage}
+          	APIRequestBaseName={this.state.apiRequestBaseName}
+          	key={classToBeBuilt.className}
         />);
       }
-      else {
-        classes.push(
-          <NestedClassComponent 
-            className={classToBeBuilt.className}
-            fields={classToBeBuilt.fields}
-            key={classToBeBuilt.className}
-            parentClass={jData[0].className}
-						parentBuilders={classToBeBuilt.parentBuilder}
-						isList={classToBeBuilt.isList}
-          />
-        );
-      }
+      // else {
+      //   classes.push(
+      //     <NestedClassComponent 
+      //       className={classToBeBuilt.className}
+      //       fields={classToBeBuilt.fields}
+      //       key={classToBeBuilt.className}
+      //       parentClass={jData[0].className}
+			// 			parentBuilders={classToBeBuilt.parentBuilder}
+			// 			isList={classToBeBuilt.isList}
+      //     />
+      //   );
+      // }
     });
 
     this.setState({builtCode: classes})

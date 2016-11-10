@@ -20,42 +20,52 @@ import NestedBuilderComponent from './NestedBuilderComponent';
  * fields: Array of JSON objects that are used to generate a bunch of builder components. 
  */
 class BaseClassComponent extends Component {
-    
-    render() {
-        var header =  `        
+    constructor(props) {
+        super(props);
+
+        this.generateHeader = this.generateHeader.bind(this);
+        this.generateFooter = this.generateFooter.bind(this);
+
+        console.log(props);
+    }
+
+    generateHeader(createTokenMethod, className, APIRequestBaseName) {
+        return `
     using System;
     using EP.PAL.BASE;
     using EP.PAL.BASE.WebService.INF;
     namespace //TODO: Namespace must be set.
     {
       //TODO: All classes require an explanation of the purpose of the request builder.
-      public class ${this.props.class.className}Builder : ${this.props.APIRequestBaseName}<${this.props.class.className}Builder>
+      public class ${className}Builder : ${APIRequestBaseName}<${className}Builder>
       {
         // Fields to hold data
-        private const string CreateTokenMethod = "${this.props.createTokenMethod}";
-        internal ${this.props.class.className}Request RequestObject = new ${this.props.class.className}Request();
+        private const string CreateTokenMethod = "${createTokenMethod}";
+        internal ${className}Request RequestObject = new ${className}Request();
         /// <summary>
         /// constructor to the class
         /// </summary>
         /// <param name="ServiceURL">ServiceURL</param>
         /// <param name="Options">MessageOptions</param>
         /// <param name="Logger">IPALLogging</param>
-        internal ${this.props.class.className}Buidler(string ServiceURL, MessageOptions Options, IPALLogging Logger)
+        internal ${className}Buidler(string ServiceURL, MessageOptions Options, IPALLogging Logger)
             : base(Options, Logger)
         {
             EndPoint = URLHelper.CombineUri(ServiceURL, CreateTokenMethod);
         }
-    `
-        var footer = 
-`
+        `
+    }
+
+    generateFooter(className, errorMessageName) {
+        return `
         /// <summary>
         /// Send the request to the defined service.        
         /// </summary>
         /// <returns>Returns an APIResponse message with the APIResponse inside it.</returns>
-        public APIResponse<${this.props.class.className}Response> Send()
+        public APIResponse<${className}Response> Send()
         {
             LogObj.WriteInfo("Performing Request");
-            return RestClient.SendRequestSerializeDeserialize<${this.props.class.className}Response, ${this.props.errorMessageName}>(this, true);
+            return RestClient.SendRequestSerializeDeserialize<${className}Response, ${errorMessageName}>(this, true);
         }
         
         /// <summary>
@@ -71,36 +81,38 @@ class BaseClassComponent extends Component {
         }
     }
 }
-`
+        `
+    }
+    render() {
 
         var builders = [];
         this.props.class.fields.forEach((element) => {
-            if(element.isNested === true) {
+            if (element.isNested === true) {
                 builders.push(
                     <NestedBuilderComponent
-                        className={this.props.class.className}
+                        className={element.fieldName}
                         fieldName={element.fieldName}
                         fieldType={element.type}
-                    />
+                        />
                 );
             }
             else {
                 builders.push(
                     <BuilderComponent
-                        className={this.props.className}
+                        className={this.props.class.className}                    
                         fieldName={element.fieldName}
                         fieldType={element.type}
-                    />
+                        />
                 );
             }
-            
+
         });
 
-        return (          
+        return (
             <div>
-                {header}
+                {this.generateHeader(this.props.createErrorTokenMethod, this.props.class.className, this.props.APIRequestBaseName)}
                 {builders}
-                {footer}
+                {this.generateFooter(this.props.class.className, this.props.errorMessageName)}
             </div>
         );
     }

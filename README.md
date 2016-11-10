@@ -1,4 +1,4 @@
-#API PAL Builder v1.0.1
+#API PAL Builder v2.0
 
 ##What is PAL?
 PAL stands for **P**roduct **A**bstraction **L**ayer.
@@ -9,7 +9,7 @@ It is used to represent an API project/endpoint in a way that testers and develo
 ##When to use this project?
 This project is meant to simplify, and standardized the creation of the builders that are associated with API projects.
 
-Currently, this project will *not* handle nested builders. Future versions of this project will be handle this use case, as we often make use of nested builders.
+This project will handle the generation of nested builders.
 
 ##How do I use this project?
 This project is designed to take the schemas from an API project and generate a builder class for that schema.

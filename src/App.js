@@ -474,7 +474,7 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
   render() {
     return (
       <div className='builder'>     
-        <h1 className='header'>API PAL Builder v1.0.1</h1>
+        <h1 className='header'>API PAL Builder v2.0</h1>
         <div className='fieldContainer'>
           <div className='label'>Error Message Name:</div>
             <input

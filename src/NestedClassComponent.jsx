@@ -13,9 +13,31 @@ import NestedBuilderComponent from './NestedBuilderComponent';
  * fields: Array of JSON objects that are used to generate a bunch of builder components. 
  */
 class NestedClassComponent extends Component {
-    
+    constructor(props) {
+        super(props);
+
+        this.returnBackToParentBuilder = this.returnBackToParentBuilder.bind(this);
+    }
+
+    /**
+     * Returns the back to parent method that nested builders have. This is built from the list of parentBuilders
+     */
+    returnBackToParentBuilder(parentClass) {
+        if(parentClass === null) {
+            parentClass = this.props.parentClass;
+        }
+        return `
+        //TODO: Write comments.
+        public ${parentClass}Builder BackTo${parentClass}Builder()
+        {
+            var aRefClass = _RefClass as ${parentClass};
+            if (aRefClass.RequestObject.${this.props.className} == null)
+                aRefClass.RequestObject.${this.props.className} = RequestObject;
+            return aRefClass;
+        }
+        `
+    }
     render() {
-        console.log(this.props);
         var header =  `        
     using System;
     using EP.PAL.BASE;
@@ -40,19 +62,21 @@ class NestedClassComponent extends Component {
     `
         var footer = 
 `
-        //TODO: Write comments.
-        public ${this.props.parentClass}Builder BackTo${this.props.parentClass}Builder()
-        {
-            var aRefClass = _RefClass as ${this.props.parentClass};
-            if (aRefClass.RequestObject.${this.props.className} == null)
-                aRefClass.RequestObject.${this.props.className} = RequestObject;
-            return aRefClass;
-        }
     }
 }
 `
 
         var builders = [];
+        var returnToParentMethods = [];
+        if(this.props.parentBuilders.length === 0) {
+            returnToParentMethods.push(this.returnBackToParentBuilder(null));
+        }
+        else {
+            this.props.parentBuilders.forEach((parent) => {
+                returnToParentMethods.push(this.returnBackToParentBuilder(parent));
+            });
+        }
+        
         this.props.fields.forEach((element) => {
             builders.push(
                 <BuilderComponent

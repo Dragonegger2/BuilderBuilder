@@ -442,12 +442,12 @@ namespace EP.PAL.Meerkat.Implementation.V1.Schemas.Search.MultiSearch
 
     jData.forEach((classToBeBuilt) => {
       if(classToBeBuilt.isBaseClass === true) {
+				
         classes.push(<BaseClassComponent 
-          className={classToBeBuilt.className}
+          class={classToBeBuilt}
           createErrorTokenMethod={this.state.createTokenMethod}
           errorMessageName={this.state.errorMessage}
           APIRequestBaseName={this.state.apiRequestBaseName}
-          fields={classToBeBuilt.fields}
           key={classToBeBuilt.className}
         />);
       }

@@ -6,6 +6,8 @@ import NestedBuilderComponent from './NestedBuilderComponent';
 /**
  * Component that represents a C# class created automatically by this project.
  * 
+ * All methods hang off of the class prop: 
+ * 
  * className:   Comes from the schema name. Used as the primary naming schema.
  *              From this we create the general schema name which is used as the class name of the builder.
  * 
@@ -20,7 +22,6 @@ import NestedBuilderComponent from './NestedBuilderComponent';
 class BaseClassComponent extends Component {
     
     render() {
-        console.log(this.props);
         var header =  `        
     using System;
     using EP.PAL.BASE;
@@ -28,18 +29,18 @@ class BaseClassComponent extends Component {
     namespace //TODO: Namespace must be set.
     {
       //TODO: All classes require an explanation of the purpose of the request builder.
-      public class ${this.props.className}Builder : ${this.props.APIRequestBaseName}<${this.props.className}Builder>
+      public class ${this.props.class.className}Builder : ${this.props.APIRequestBaseName}<${this.props.class.className}Builder>
       {
         // Fields to hold data
         private const string CreateTokenMethod = "${this.props.createTokenMethod}";
-        internal ${this.props.className}Request RequestObject = new ${this.props.className}Request();
+        internal ${this.props.class.className}Request RequestObject = new ${this.props.class.className}Request();
         /// <summary>
         /// constructor to the class
         /// </summary>
         /// <param name="ServiceURL">ServiceURL</param>
         /// <param name="Options">MessageOptions</param>
         /// <param name="Logger">IPALLogging</param>
-        internal ${this.props.className}Buidler(string ServiceURL, MessageOptions Options, IPALLogging Logger)
+        internal ${this.props.class.className}Buidler(string ServiceURL, MessageOptions Options, IPALLogging Logger)
             : base(Options, Logger)
         {
             EndPoint = URLHelper.CombineUri(ServiceURL, CreateTokenMethod);
@@ -51,10 +52,10 @@ class BaseClassComponent extends Component {
         /// Send the request to the defined service.        
         /// </summary>
         /// <returns>Returns an APIResponse message with the APIResponse inside it.</returns>
-        public APIResponse<${this.props.className}Response> Send()
+        public APIResponse<${this.props.class.className}Response> Send()
         {
             LogObj.WriteInfo("Performing Request");
-            return RestClient.SendRequestSerializeDeserialize<${this.props.className}Response, ${this.props.errorMessageName}>(this, true);
+            return RestClient.SendRequestSerializeDeserialize<${this.props.class.className}Response, ${this.props.errorMessageName}>(this, true);
         }
         
         /// <summary>
@@ -73,19 +74,17 @@ class BaseClassComponent extends Component {
 `
 
         var builders = [];
-        this.props.fields.forEach((element) => {
+        this.props.class.fields.forEach((element) => {
             if(element.isNested === true) {
-                console.log("Adding nested builder.");
                 builders.push(
                     <NestedBuilderComponent
-                        className={this.props.className}
+                        className={this.props.class.className}
                         fieldName={element.fieldName}
                         fieldType={element.type}
                     />
                 );
             }
             else {
-                console.log("Adding builder.");
                 builders.push(
                     <BuilderComponent
                         className={this.props.className}
